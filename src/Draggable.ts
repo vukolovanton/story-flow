@@ -5,8 +5,8 @@ export class Draggable {
   pos3: number;
   pos4: number;
 
-  constructor(selector: string) {
-    this.element = document.querySelector(selector)! as HTMLElement;
+  constructor(element: HTMLElement) {
+    this.element = element;
     this.pos1 = 0;
     this.pos2 = 0;
     this.pos3 = 0;
