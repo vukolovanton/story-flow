@@ -1,14 +1,10 @@
 import { Draggable } from "./Draggable";
-import Graph from './Graphs';
 
 window.addEventListener('load', function() {
   function collectGraphs() {
-    const draggableItems = document.querySelectorAll<HTMLElement>('.draggable')
-    Graph.addGraphs(Array.from(draggableItems));
-  }
+    const draggableItems = document.querySelectorAll<HTMLElement>('.draggable');
 
-  function createDragElements() {
-    Graph.getGraphs().forEach(element => {
+    draggableItems.forEach(element => {
       const draggable = new Draggable(element);
       draggable.dragElement();
     });
@@ -18,29 +14,38 @@ window.addEventListener('load', function() {
     const input = document.querySelector<HTMLInputElement>('.new-card-input');
     if (input) {
       const text = input.value;
-      const newDocument = document.createElement("div");
+      const newGraph = document.createElement("div");
 
-      newDocument.classList.add('draggable')
-      newDocument.innerHTML = `
+      newGraph.classList.add('draggable')
+      newGraph.innerHTML = `
         <header>${text}</header> 
         <div class="content" contenteditable="true">
           <p>Lorem ipsum dolor sit amet, officia excepte</p>
         </div>
-      `
+      `;
 
-      document.getElementById('app')?.append(newDocument);
+      document.getElementById('app')?.append(newGraph);
       input.value = '';
-      collectGraphs();
-      createDragElements();
+
+      new Draggable(newGraph).dragElement();
     }
   }
 
-  const addButton = document.querySelector<HTMLButtonElement>('.new-card-add');
-  addButton?.addEventListener('click', createNewGraph);
+  document.querySelector<HTMLButtonElement>('.new-card-add')!.addEventListener('click', createNewGraph);
 
   collectGraphs();
-  createDragElements();
+
+  // const canvas = document.querySelector('canvas')!;
+  // const ctx = canvas?.getContext('2d');
+
+  // function animate() {
+  //   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //   requestAnimationFrame(animate);
+  // }
+
+  // animate();
 
 });
+
 
 export { };
