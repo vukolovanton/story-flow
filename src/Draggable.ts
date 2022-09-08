@@ -48,51 +48,41 @@ export class Draggable {
     document.onmousemove = null;
   }
 
-  renderLinkIcon = () => {
-    const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    const iconLine = document.createElementNS(
+  drawLine = (from: HTMLElement, to: HTMLElement) => {
+    const svgGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    const line = document.createElementNS(
       'http://www.w3.org/2000/svg',
       'path'
     );
 
-    const elementCoordinates = this.element.getBoundingClientRect();
-    const childCoordinates = this.childrens[0].getBoundingClientRect();
+    const elementCoordinates = from.getBoundingClientRect();
+    const childCoordinates = to.getBoundingClientRect();
 
-    iconLine.setAttribute('d', `M ${elementCoordinates.x} ${elementCoordinates.y} L ${childCoordinates.x} ${childCoordinates.y}`);
-    iconLine.setAttribute('stroke', 'black');
+    line.setAttribute('d', `M ${elementCoordinates.x} ${elementCoordinates.y} L ${childCoordinates.x} ${childCoordinates.y}`);
+    line.setAttribute('stroke', 'black');
 
-    iconSvg.appendChild(iconLine);
+    svgGroup.appendChild(line);
 
-    document.getElementById('svg')?.append(iconSvg);
+    document.getElementById('svg')?.append(svgGroup);
 
   }
 
-  handleDBClick = () => {
+  handleDBClick = (event: MouseEvent) => {
+    event.stopPropagation();
     const readyForConnect = connector.getReadyForConnect();
-
     if (!readyForConnect) {
       connector.setReadyForConnect(this.element);
-      return;
-    }
-
-    if (readyForConnect) {
+      this.element.classList.add('ready-for-connect');
+    } else {
       if (readyForConnect.id === this.element.id) {
         connector.setReadyForConnect(null);
-        return;
+        this.element.classList.remove('ready-for-connect');
+      } else {
+        this.drawLine(readyForConnect, event.currentTarget);
+        readyForConnect.classList.remove('ready-for-connect');
+        connector.setReadyForConnect(null);
       }
-
-      this.childrens.push(readyForConnect);
-      connector.setReadyForConnect(null);
     }
-
-    if (this.childrens.length > 0) {
-      this.childrens.forEach(child => {
-        child.classList.add('children');
-      });
-      this.element.classList.add('children')
-      this.renderLinkIcon();
-    }
-
   }
 
 
