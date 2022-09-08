@@ -27,7 +27,7 @@ body {
 .draggable {
   position: absolute;
   border: 1px solid grey;
-  width: 100px;
+  width: 250px;
   position: absolute;
   z-index: 9;
   background-color: #f1f1f1;
@@ -44,8 +44,8 @@ body {
   }
 }
 
-.children {
-  border: 2px solid blue;
+.transparent-line {
+  opacity: 0.3;
 }
 
 .ready-for-connect {

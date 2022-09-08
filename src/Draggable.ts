@@ -39,6 +39,14 @@ export class Draggable {
     this.pos4 = e.clientY;
     document.onmouseup = this.closeDragElement;
     document.onmousemove = this.elementDrag;
+    this.changeOpacity('0.2');
+  }
+
+  changeOpacity(value: string) {
+    const mainSvg = document.getElementById('svg');
+    if (mainSvg) {
+      mainSvg.style.opacity = value;
+    }
   }
 
   elementDrag = (e: MouseEvent) => {
@@ -73,6 +81,7 @@ export class Draggable {
     document.onmousemove = null;
 
     this.deleteLines();
+    this.changeOpacity('1');
 
     Object.keys(connector.getConnectors()).forEach(elementId => {
       if (this.element.id === elementId) { // Redraw lines only for current moved item
