@@ -1,5 +1,16 @@
+import { Draggable } from "./Draggable";
+
+
+interface Connectors {
+  [key: string]: {
+    parent: HTMLElement[],
+    childrens: HTMLElement[],
+  }
+}
+
 let instance: Connector;
-let readyForConnect: HTMLElement | null;
+let readyForConnect: Draggable | null;
+let connectos: Connectors = {};
 
 class Connector {
   constructor() {
@@ -13,7 +24,7 @@ class Connector {
     return this;
   }
 
-  setReadyForConnect(element: HTMLElement | null) {
+  setReadyForConnect(element: Draggable | null) {
     if (!readyForConnect) {
       readyForConnect = element;
     } else {
@@ -21,8 +32,32 @@ class Connector {
     }
   }
 
-  getReadyForConnect(): HTMLElement | null {
+  getReadyForConnect(): Draggable | null {
     return readyForConnect;
+  }
+
+  setChildren(id: string, element: HTMLElement) {
+    if (!connectos[id]) {
+      connectos[id] = {
+        parent: [],
+        childrens: [],
+      }
+    }
+    connectos[id].childrens.push(element);
+  }
+
+  setParent(id: string, element: HTMLElement) {
+        if (!connectos[id]) {
+      connectos[id] = {
+        parent: [],
+        childrens: [],
+      }
+    }
+    connectos[id].parent.push(element);
+  }
+
+  getConnectors(): Connectors {
+    return connectos;
   }
 
 }
