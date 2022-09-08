@@ -18,7 +18,7 @@ window.addEventListener('load', function() {
 
       newGraph.classList.add('draggable')
       newGraph.innerHTML = `
-        <header>${text}</header> 
+        <header draggable="true" id=${Date.now().toString()}>${text}</header> 
         <div class="content" contenteditable="true">
           <p>Lorem ipsum dolor sit amet, officia excepte</p>
         </div>
