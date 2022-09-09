@@ -39,6 +39,12 @@ header {
   z-index: 1000;
   background-color: lavender;
 
+  & .controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
   & button {
     padding: 0.3rem;
   }

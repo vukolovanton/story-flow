@@ -11,10 +11,17 @@ window.addEventListener('load', function() {
   }
 
   function createNewGraph() {
-    const input = document.querySelector<HTMLInputElement>('.new-card-input');
+    const input = document.querySelector<HTMLInputElement>('.new-card-text');
     if (input) {
       const text = input.value;
-      if (!text) return;
+      if (!text) {
+        return
+      }
+
+      let color = document.querySelector<HTMLInputElement>('.new-card-color')?.value;
+      if (!color) {
+        color = '#2196F3';
+      }
 
       const newGraph = document.createElement("div");
 
@@ -25,7 +32,7 @@ window.addEventListener('load', function() {
       newGraph.style.left = `${window.scrollX + 25}px`;
 
       newGraph.innerHTML = `
-        <strong draggable="true">${text}</strong> 
+        <strong draggable="true" style="background-color:${color}">${text}</strong> 
         <div class="content" contenteditable="true">
           <p>Quid quid latine dictum sit, altum viditur</p>
         </div>
