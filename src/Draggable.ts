@@ -121,7 +121,7 @@ export class Draggable {
     svgGroup.setAttribute('data-to', to.id);
 
     line.setAttribute('d', `M ${childCoordinates.x} ${childCoordinates.y} L ${elementCoordinates.x} ${elementCoordinates.y}`);
-    line.setAttribute('stroke', 'black');
+    line.setAttribute('stroke', 'rgb(66, 89, 177)');
 
     svgGroup.appendChild(line);
 
