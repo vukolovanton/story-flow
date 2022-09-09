@@ -14,13 +14,15 @@ window.addEventListener('load', function() {
     const input = document.querySelector<HTMLInputElement>('.new-card-input');
     if (input) {
       const text = input.value;
+      if (!text) return;
+
       const newGraph = document.createElement("div");
 
       newGraph.classList.add('draggable')
       newGraph.innerHTML = `
-        <header draggable="true" id=${Date.now().toString()}>${text}</header> 
+        <strong draggable="true" id=${Date.now().toString()}>${text}</strong> 
         <div class="content" contenteditable="true">
-          <p>Lorem ipsum dolor sit amet, officia excepte</p>
+          <p>Quid quid latine dictum sit, altum viditur</p>
         </div>
       `;
 
@@ -34,17 +36,6 @@ window.addEventListener('load', function() {
   document.querySelector<HTMLButtonElement>('.new-card-add')!.addEventListener('click', createNewGraph);
 
   collectGraphs();
-
-  // const canvas = document.querySelector('canvas')!;
-  // const ctx = canvas?.getContext('2d');
-
-  // function animate() {
-  //   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  //   requestAnimationFrame(animate);
-  // }
-
-  // animate();
-
 });
 
 

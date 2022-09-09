@@ -39,13 +39,14 @@ export class Draggable {
     this.pos4 = e.clientY;
     document.onmouseup = this.closeDragElement;
     document.onmousemove = this.elementDrag;
-    this.changeOpacity('0.2');
+    this.changeLineStyle('0.2', '0.5em');
   }
 
-  changeOpacity(value: string) {
+  changeLineStyle(value: string, strokeDash: string) {
     const mainSvg = document.getElementById('svg');
     if (mainSvg) {
       mainSvg.style.opacity = value;
+      mainSvg.style.strokeDasharray = strokeDash;
     }
   }
 
@@ -68,7 +69,7 @@ export class Draggable {
     const nodesToDelete: ChildNode[] = [];
 
     groups?.forEach(node => {
-      if (node?.dataset?.from === this.element.id || node?.dataset?.to === this.element.id) {
+      if ((node as HTMLElement)?.dataset?.from === this.element.id || (node as HTMLElement)?.dataset?.to === this.element.id) {
         nodesToDelete.push(node);
       }
     });
@@ -81,20 +82,28 @@ export class Draggable {
     document.onmousemove = null;
 
     this.deleteLines();
-    this.changeOpacity('1');
+    this.changeLineStyle('1', 'none');
 
     Object.keys(connector.getConnectors()).forEach(elementId => {
       if (this.element.id === elementId) { // Redraw lines only for current moved item
         const parent = connector.getConnectors()[elementId].parent;
         if (parent.length > 0) {
-          parent.forEach(p => this.drawLine(p, this.element));
+          parent.forEach(p => this.drawLine(this.element, p));
         }
         const childrens = connector.getConnectors()[elementId].childrens;
         if (childrens.length > 0) {
-          childrens.forEach(c => this.drawLine(c, this.element));
+          childrens.forEach(c => this.drawLine(this.element, c));
         }
       }
     })
+  }
+
+  getOffset(element: HTMLElement): { x: number, y: number} {
+    const rect = element.getBoundingClientRect();
+    return {
+      x: rect.x + window.scrollX,
+      y: rect.y + window.scrollY,
+    }
   }
 
   drawLine = (from: HTMLElement, to: HTMLElement) => {
@@ -104,13 +113,14 @@ export class Draggable {
       'path'
     );
 
-    const elementCoordinates = from.getBoundingClientRect();
-    const childCoordinates = to.getBoundingClientRect();
+
+    const elementCoordinates = this.getOffset(from);
+    const childCoordinates = this.getOffset(to);
 
     svgGroup.setAttribute('data-from', from.id);
     svgGroup.setAttribute('data-to', to.id);
 
-    line.setAttribute('d', `M ${elementCoordinates.x} ${elementCoordinates.y} L ${childCoordinates.x} ${childCoordinates.y}`);
+    line.setAttribute('d', `M ${childCoordinates.x} ${childCoordinates.y} L ${elementCoordinates.x} ${elementCoordinates.y}`);
     line.setAttribute('stroke', 'black');
 
     svgGroup.appendChild(line);

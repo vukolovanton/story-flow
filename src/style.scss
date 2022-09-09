@@ -2,45 +2,73 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: 'Courier New';
 }
 
-body {
-  // background-color: black;
+body, svg {
+  width: 3000px;
+  height: 3000px;
 }
 
 #svg {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  min-width: 100vw;
-  min-height: 100vh;
   left: 0px;
   top: 0px;
 }
 
-.controls {
-  position: absolute;
-  left: 0px;
-  top: 0px;
+.dots-background {
+  background-color: #f1f4f9;
+  background-image: radial-gradient(#90a1c1 0.5px, #f1f4f9 0.5px);
+  background-size: 10px 10px;
+}
+
+.lines-background {
+  background-color: #fff;
+  background-image: linear-gradient(#eee .1em, transparent .1em);
+  background-size: 100% 1.2em;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+  padding: 0.5rem;
+  position: fixed;
+  z-index: 1000;
+  background-color: lavender;
+
+  & button {
+    padding: 0.3rem;
+  }
 }
 
 .draggable {
-  position: absolute;
-  border: 1px solid grey;
+  display: flex;
+  flex-direction: column;
   width: 250px;
   position: absolute;
   z-index: 9;
   background-color: #f1f1f1;
   border: 1px solid #d3d3d3;
   text-align: center;
+  top: 10%;
+  left: 10%;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 
-  & header {
-    padding: 10px;
+  & strong {
+    padding: 0.2rem 1rem;
     cursor: move;
     z-index: 10;
     background-color: #2196F3;
     color: #fff;
     border-bottom: 1px solid grey;
+  }
+
+  & .content {
+    padding: 0.2rem;
+    text-align: left;
   }
 }
 
@@ -49,5 +77,6 @@ body {
 }
 
 .ready-for-connect {
-  border: 2px solid green;
+  border: 2px solid limegreen;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px, rgba(0, 0, 0, 0.1) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset
 }
