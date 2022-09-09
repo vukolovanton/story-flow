@@ -19,8 +19,9 @@ window.addEventListener('load', function() {
       const newGraph = document.createElement("div");
 
       newGraph.classList.add('draggable')
+      newGraph.setAttribute('id', Date.now().toString());
       newGraph.innerHTML = `
-        <strong draggable="true" id=${Date.now().toString()}>${text}</strong> 
+        <strong draggable="true">${text}</strong> 
         <div class="content" contenteditable="true">
           <p>Quid quid latine dictum sit, altum viditur</p>
         </div>
