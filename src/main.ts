@@ -20,6 +20,10 @@ window.addEventListener('load', function() {
 
       newGraph.classList.add('draggable')
       newGraph.setAttribute('id', Date.now().toString());
+
+      newGraph.style.top = `${window.scrollY + 50}px`;
+      newGraph.style.left = `${window.scrollX + 25}px`;
+
       newGraph.innerHTML = `
         <strong draggable="true">${text}</strong> 
         <div class="content" contenteditable="true">
