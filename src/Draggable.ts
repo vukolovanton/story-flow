@@ -3,7 +3,6 @@ import connector from "./Connector";
 export class Draggable {
   element: HTMLElement;
   isReadyForConnect: boolean;
-  childrens: Array<HTMLElement>;
   lineIds: string[];
   pos1: number;
   pos2: number;
@@ -13,7 +12,6 @@ export class Draggable {
   constructor(element: HTMLElement) {
     this.element = element;
     this.isReadyForConnect = false;
-    this.childrens = [];
     this.lineIds = [];
     this.pos1 = 0;
     this.pos2 = 0;
@@ -24,7 +22,7 @@ export class Draggable {
   dragElement = () => {
     if (this.element) {
       // this.element.firstElementChild!.onmousedown = this.dragMouseDown;
-      this.element.firstElementChild.addEventListener('dragstart', (e) => {
+      this.element.firstElementChild?.addEventListener('dragstart', (e) => {
         this.dragMouseDown(e);
       })
       this.element.addEventListener('contextmenu', this.handleDBClick);
