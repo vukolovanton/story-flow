@@ -14,7 +14,7 @@ export function createDraggableHTMLElement(
   text: string,
   color: string,
   coordinates: { x: number, y: number } | null,
-  id: string | null): HTMLElement {
+  id: string): HTMLElement {
   const newGraph = document.createElement("div");
 
   newGraph.classList.add('draggable')
@@ -47,13 +47,12 @@ export function getOffset(element: HTMLElement): { x: number, y: number } {
   }
 }
 
-export function drawLine(from: HTMLElement, to: HTMLElement) {
+export function drawLine(from: HTMLElement, to: HTMLElement): SVGElement {
   const svgGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   const line = document.createElementNS(
     'http://www.w3.org/2000/svg',
     'path'
   );
-
 
   const elementCoordinates = getOffset(from);
   const childCoordinates = getOffset(to);
@@ -68,4 +67,5 @@ export function drawLine(from: HTMLElement, to: HTMLElement) {
 
   document.getElementById('svg')?.append(svgGroup);
 
+  return svgGroup;
 }

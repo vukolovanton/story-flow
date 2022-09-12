@@ -1,3 +1,4 @@
+import connector from "./Connector";
 import { Draggable } from "./Draggable";
 import { createDraggableHTMLElement, drawLine, getConvertedElementCoordinates } from "./utils";
 
@@ -9,7 +10,12 @@ interface StateItem {
     x: number;
     y: number;
   },
-  to: number[];
+  connections: Connections[];
+}
+
+interface Connections {
+  from: number,
+  to: number,
 }
 
 interface State {
@@ -40,7 +46,13 @@ function createNewGraph() {
       color = '#2196F3';
     }
 
-    const newGraph = createDraggableHTMLElement(text, 'Quid quid latine dictum sit, altum viditur', color, null, Date.now().toString());
+    const newGraph = createDraggableHTMLElement(
+      text,
+      'Quid quid latine dictum sit, altum viditur',
+      color, 
+      null,
+      Date.now().toString()
+    );
     new Draggable(newGraph).dragElement();
     input.value = '';
   }
@@ -63,7 +75,7 @@ function saveCurrentState(event: Event) {
       title,
       text,
       position: getConvertedElementCoordinates(item),
-      to: [],
+      connections: [],
     }
   });
 
@@ -73,7 +85,7 @@ function saveCurrentState(event: Event) {
     const to = Number(line.dataset?.to);
 
     if (from && state[from]) {
-      state[from].to.push(to);
+      state[from].connections.push({ from, to });
     }
   });
 
@@ -89,21 +101,32 @@ function loadState() {
 
     Object.keys(savedState).forEach(id => {
       const item = savedState[id];
-      createDraggableHTMLElement(item.title, item.text, 'red', { x: item.position.x, y: item.position.y }, id);
 
-      if (item.to.length > 0) {
+      createDraggableHTMLElement(
+        item.title,
+        item.text,
+        'red',
+        { x: item.position.x, y: item.position.y },
+        id
+      );
+
+      if (item.connections.length > 0) {
         itemsToConnect.push(item); // We need to create elements first and connect them after
       }
     });
 
     itemsToConnect.forEach(item => {
-      if (item.to.length > 0) {
+      if (item.connections.length > 0) {
         const itemHTMLElement = document.getElementById(item.id);
         if (itemHTMLElement) {
-          item.to.forEach(to => {
-            const toHTMLElement = document.getElementById(to.toString());
+          item.connections.forEach(connection => {
+            const toHTMLElement = document.getElementById(connection.to.toString());
             if (toHTMLElement) {
-              drawLine(itemHTMLElement, toHTMLElement);
+              const line = drawLine(itemHTMLElement, toHTMLElement);
+              connector.setChildren(itemHTMLElement.id, toHTMLElement);
+              connector.setParent(toHTMLElement.id, itemHTMLElement);
+              line.setAttribute('data-from', connection.from.toString());
+              line.setAttribute('data-to', connection.to.toString());
             }
           })
         }
