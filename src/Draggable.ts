@@ -1,4 +1,5 @@
 import connector from "./Connector";
+import { drawLine } from "./utils";
 
 export class Draggable {
   element: HTMLElement;
@@ -86,45 +87,14 @@ export class Draggable {
       if (this.element.id === elementId) { // Redraw lines only for current moved item
         const parent = connector.getConnectors()[elementId].parent;
         if (parent.length > 0) {
-          parent.forEach(p => this.drawLine(this.element, p));
+          parent.forEach(p => drawLine(this.element, p));
         }
         const childrens = connector.getConnectors()[elementId].childrens;
         if (childrens.length > 0) {
-          childrens.forEach(c => this.drawLine(this.element, c));
+          childrens.forEach(c => drawLine(this.element, c));
         }
       }
     })
-  }
-
-  getOffset(element: HTMLElement): { x: number, y: number} {
-    const rect = element.getBoundingClientRect();
-    return {
-      x: rect.x + window.scrollX,
-      y: rect.y + window.scrollY,
-    }
-  }
-
-  drawLine = (from: HTMLElement, to: HTMLElement) => {
-    const svgGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    const line = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'path'
-    );
-
-
-    const elementCoordinates = this.getOffset(from);
-    const childCoordinates = this.getOffset(to);
-
-    svgGroup.setAttribute('data-from', from.id);
-    svgGroup.setAttribute('data-to', to.id);
-
-    line.setAttribute('d', `M ${childCoordinates.x} ${childCoordinates.y} L ${elementCoordinates.x} ${elementCoordinates.y}`);
-    line.setAttribute('stroke', 'rgb(66, 89, 177)');
-
-    svgGroup.appendChild(line);
-
-    document.getElementById('svg')?.append(svgGroup);
-
   }
 
   handleDBClick = (event: MouseEvent) => {
@@ -140,12 +110,10 @@ export class Draggable {
         this.element.classList.remove('ready-for-connect');
       } else { // readyForConnect - родитель, который был выбран сначала, this - на чем случился клик затем
         if (event.currentTarget) {
-          this.drawLine(readyForConnect, event.currentTarget as HTMLElement);
+          drawLine(readyForConnect, event.currentTarget as HTMLElement);
           readyForConnect.classList.remove('ready-for-connect');
           connector.setReadyForConnect(null);
 
-          // connector.setChildren(readyForConnect.id, this.element);
-          // connector.setParent(this.element.id, readyForConnect);
           connector.setChildren(this.element.id, readyForConnect);
           connector.setParent(readyForConnect.id, this.element);
         }

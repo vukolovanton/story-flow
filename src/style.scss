@@ -69,7 +69,18 @@ header {
 
   & button {
     padding: 0.3rem;
+    cursor: pointer;
   }
+}
+
+.save {
+  background-image: url('../public/save.png');
+  width: 20px;
+  height: 20px;
+  background-size: 100%;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 .draggable {
