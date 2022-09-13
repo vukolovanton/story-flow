@@ -10,7 +10,7 @@ interface Connectors {
 
 let instance: Connector;
 let readyForConnect: Draggable | null;
-let connectos: Connectors = {};
+let connectors: Connectors = {};
 
 class Connector {
   constructor() {
@@ -18,10 +18,6 @@ class Connector {
       throw new Error("Singleton already exists");
     }
     instance = this;
-  }
-
-  getInstance() {
-    return this;
   }
 
   setReadyForConnect(element: Draggable | null) {
@@ -37,27 +33,52 @@ class Connector {
   }
 
   setChildren(id: string, element: HTMLElement) {
-    if (!connectos[id]) {
-      connectos[id] = {
+    if (!connectors[id]) {
+      connectors[id] = {
         parent: [],
         childrens: [],
       }
     }
-    connectos[id].childrens.push(element);
+    connectors[id].childrens.push(element);
   }
 
   setParent(id: string, element: HTMLElement) {
-        if (!connectos[id]) {
-      connectos[id] = {
+        if (!connectors[id]) {
+      connectors[id] = {
         parent: [],
         childrens: [],
       }
     }
-    connectos[id].parent.push(element);
+    connectors[id].parent.push(element);
   }
 
   getConnectors(): Connectors {
-    return connectos;
+    return connectors;
+  }
+
+  deleteConnectors(elementId: string) {
+    delete connectors[elementId];
+
+    Object.keys(connectors).forEach(id => {
+      const item = connectors[id];
+
+      if (item.parent.length > 0) {
+        item.parent.forEach((parent, index) => {
+          if (parent.id === elementId) {
+            item.parent.splice(index, 1);
+          }
+        });
+      }
+
+      if (item.childrens.length > 0) {
+        item.childrens.forEach((children, index) => {
+          if (children.id === elementId) {
+            item.childrens.splice(index, 1);
+          }
+        });
+      }
+    });
+
   }
 
 }

@@ -1,7 +1,7 @@
 import connector from "./Connector";
 import { Draggable } from "./Draggable";
 import { State, StateItem } from "./interfaces";
-import { createDraggableHTMLElement, drawLine, getConvertedElementCoordinates } from "./utils";
+import { clearObject, createDraggableHTMLElement, drawLine, getConvertedElementCoordinates } from "./utils";
 
 let state: State = {};
 
@@ -73,6 +73,10 @@ export function saveCurrentState() {
   localStorage.setItem('state', JSON.stringify(state));
 }
 
+export function deleteItemFromState(id: string) {
+  delete state[id];
+}
+
 function loadState(rawState: string) {
   if (rawState) {
     const savedState: State = JSON.parse(rawState);
@@ -138,6 +142,8 @@ function deleteExistingGraphs() {
 
   graphs.forEach(graph => graph.remove());
   lines.forEach(line => line.remove());
+
+  clearObject(state);
 }
 
 function uploadFile(event: Event) {

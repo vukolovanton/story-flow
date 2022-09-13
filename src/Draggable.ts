@@ -1,5 +1,5 @@
 import connector from "./Connector";
-import { saveCurrentState } from "./main";
+import { deleteItemFromState, saveCurrentState } from "./main";
 import { changeLineStyle, drawLine } from "./utils";
 
 export class Draggable {
@@ -92,22 +92,48 @@ export class Draggable {
     saveCurrentState();
   }
 
+  deleteGraph = (event: KeyboardEvent) => {
+    event.stopPropagation();
+
+    if (event.code === 'Backspace' && connector.getReadyForConnect()?.element.id === this.element.id) {
+      deleteItemFromState(this.element.id);
+      connector.deleteConnectors(this.element.id);
+      console.log(this.element, 'el')
+      this.element.remove();
+
+      const lines = document.querySelectorAll<SVGElement>('g'); // Remove lines
+      lines.forEach(line => {
+        if (line.dataset.from?.toString() === this.element.id || line.dataset.to?.toString() === this.element.id) {
+          line.remove();
+        }
+      });
+
+      connector.setReadyForConnect(null);
+      saveCurrentState();
+    }
+  }
+
   handleRightClick = (event: MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
     const readyForConnect = connector.getReadyForConnect()?.element;
+
+    document.addEventListener('keydown', this.deleteGraph);
+
     if (!readyForConnect) {
       connector.setReadyForConnect(this);
       this.element.classList.add('ready-for-connect');
     } else {
       if (readyForConnect.id === this.element.id) {
         connector.setReadyForConnect(null);
+        document.removeEventListener('keydown', this.deleteGraph);
         this.element.classList.remove('ready-for-connect');
       } else { // readyForConnect - родитель, который был выбран сначала, this - на чем случился клик затем
         if (event.currentTarget) {
           drawLine(readyForConnect, event.currentTarget as HTMLElement);
           readyForConnect.classList.remove('ready-for-connect');
           connector.setReadyForConnect(null);
+          document.removeEventListener('keydown', this.deleteGraph);
 
           connector.setChildren(this.element.id, readyForConnect);
           connector.setParent(readyForConnect.id, this.element);
