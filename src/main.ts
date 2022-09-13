@@ -1,26 +1,7 @@
 import connector from "./Connector";
 import { Draggable } from "./Draggable";
+import { State, StateItem } from "./interfaces";
 import { createDraggableHTMLElement, drawLine, getConvertedElementCoordinates } from "./utils";
-
-interface StateItem {
-  id: string;
-  title: string;
-  text: string;
-  position: {
-    x: number;
-    y: number;
-  },
-  connections: Connections[];
-}
-
-interface Connections {
-  from: number,
-  to: number,
-}
-
-interface State {
-  [key: string]: StateItem;
-}
 
 let state: State = {};
 
@@ -49,7 +30,7 @@ function createNewGraph() {
     const newGraph = createDraggableHTMLElement(
       text,
       'Quid quid latine dictum sit, altum viditur',
-      color, 
+      color,
       null,
       Date.now().toString()
     );
@@ -58,22 +39,22 @@ function createNewGraph() {
   }
 }
 
-function saveCurrentState(event: Event) {
-  event.preventDefault();
-  state = {};
-
+export function saveCurrentState() {
   const items = document.querySelectorAll<HTMLElement>('.draggable'); // Save information about Graphs
   items.forEach(item => {
     if (!item.id) return;
 
     const id = item.id;
-    const title = item.getElementsByTagName('strong')[0].innerText;
+    const strong = item.getElementsByTagName('strong')[0];
+    const color = strong.style.backgroundColor;
+    const title = strong.innerText;
     const text = item.getElementsByTagName('p')[0].innerText;
 
     state[id] = {
       id,
       title,
       text,
+      color,
       position: getConvertedElementCoordinates(item),
       connections: [],
     }
@@ -92,10 +73,9 @@ function saveCurrentState(event: Event) {
   localStorage.setItem('state', JSON.stringify(state));
 }
 
-function loadState() {
-  const rawSavedState = localStorage.getItem('state');
-  if (rawSavedState) {
-    const savedState: State = JSON.parse(rawSavedState);
+function loadState(rawState: string) {
+  if (rawState) {
+    const savedState: State = JSON.parse(rawState);
 
     const itemsToConnect: StateItem[] = [];
 
@@ -105,7 +85,7 @@ function loadState() {
       createDraggableHTMLElement(
         item.title,
         item.text,
-        'red',
+        item.color,
         { x: item.position.x, y: item.position.y },
         id
       );
@@ -136,12 +116,63 @@ function loadState() {
   }
 }
 
+function saveJsonObjToFile() {
+  // file setting
+  const text = JSON.stringify(state);
+  const name = "sample.json";
+  const type = "text/plain";
+
+  // create file
+  const a = document.createElement("a");
+  const file = new Blob([text], { type: type });
+  a.href = URL.createObjectURL(file);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+function deleteExistingGraphs() {
+  const graphs = document.querySelectorAll<HTMLElement>('.draggable');
+  const lines = document.querySelectorAll<SVGElement>('g');
+
+  graphs.forEach(graph => graph.remove());
+  lines.forEach(line => line.remove());
+}
+
+function uploadFile(event: Event) {
+  if (event && event.target) {
+    const file = (event.target as HTMLInputElement).files;
+    if (file && file[0]) {
+      let reader = new FileReader();
+      reader.readAsText(file[0]);
+
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          deleteExistingGraphs();
+          loadState(reader.result as string);
+          activateGraphs();
+        }
+      };
+
+      reader.onerror = () => {
+        alert(reader.error);
+      };
+    }
+  }
+
+}
+
 window.addEventListener('load', function() {
 
   document.querySelector<HTMLButtonElement>('.new-card-add')!.addEventListener('click', createNewGraph);
-  document.querySelector<HTMLButtonElement>('.save')!.addEventListener('click', saveCurrentState);
+  document.querySelector<HTMLButtonElement>('.save')!.addEventListener('click', saveJsonObjToFile);
+  document.getElementById('file')?.addEventListener('change', uploadFile);
 
-  loadState();
+  const localState = localStorage.getItem('state');
+  if (localState) {
+    loadState(localState);
+  }
   activateGraphs();
 });
 

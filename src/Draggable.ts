@@ -1,5 +1,6 @@
 import connector from "./Connector";
-import { drawLine } from "./utils";
+import { saveCurrentState } from "./main";
+import { changeLineStyle, drawLine } from "./utils";
 
 export class Draggable {
   element: HTMLElement;
@@ -26,7 +27,7 @@ export class Draggable {
       this.element.firstElementChild?.addEventListener('dragstart', (e) => {
         this.dragMouseDown(e);
       })
-      this.element.addEventListener('contextmenu', this.handleDBClick);
+      this.element.addEventListener('contextmenu', this.handleRightClick);
     }
   };
 
@@ -36,17 +37,9 @@ export class Draggable {
     // get the mouse cursor position at startup:
     this.pos3 = e.clientX;
     this.pos4 = e.clientY;
-    document.onmouseup = this.closeDragElement;
+    document.onmouseup = this.redrawLines;
     document.onmousemove = this.elementDrag;
-    this.changeLineStyle('0.2', '0.5em');
-  }
-
-  changeLineStyle(value: string, strokeDash: string) {
-    const mainSvg = document.getElementById('svg');
-    if (mainSvg) {
-      mainSvg.style.opacity = value;
-      mainSvg.style.strokeDasharray = strokeDash;
-    }
+    changeLineStyle('0.2', '0.5em');
   }
 
   elementDrag = (e: MouseEvent) => {
@@ -76,12 +69,12 @@ export class Draggable {
     nodesToDelete.forEach(node => node.remove());
   }
 
-  closeDragElement = () => {
+  redrawLines = () => {
     document.onmouseup = null;
     document.onmousemove = null;
 
     this.deleteLines();
-    this.changeLineStyle('1', 'none');
+    changeLineStyle('1', 'none');
 
     Object.keys(connector.getConnectors()).forEach(elementId => {
       if (this.element.id === elementId) { // Redraw lines only for current moved item
@@ -95,9 +88,11 @@ export class Draggable {
         }
       }
     })
+
+    saveCurrentState();
   }
 
-  handleDBClick = (event: MouseEvent) => {
+  handleRightClick = (event: MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
     const readyForConnect = connector.getReadyForConnect()?.element;
@@ -116,6 +111,8 @@ export class Draggable {
 
           connector.setChildren(this.element.id, readyForConnect);
           connector.setParent(readyForConnect.id, this.element);
+
+          saveCurrentState();
         }
       }
     }

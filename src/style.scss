@@ -73,14 +73,53 @@ header {
   }
 }
 
-.save {
-  background-image: url('../public/save.png');
-  width: 20px;
-  height: 20px;
+.icon-button {
+  width: 16px;
+  height: 16px;
   background-size: 100%;
   border: none;
   background-color: transparent;
   cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.save {
+  background-image: url('/save.png');
+}
+
+.inputfile {
+  cursor: pointer;
+  position: relative;
+  font-size: 0px;
+  height: 16px;
+
+  &::file-selector-button {
+    width: 0px;
+  }
+
+  &::-webkit-file-upload-button {
+    visibility: hidden;;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-size: 100%;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    background-image: url('/upload.png');
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
 }
 
 .draggable {

@@ -68,4 +68,18 @@ export function drawLine(from: HTMLElement, to: HTMLElement): SVGElement {
   document.getElementById('svg')?.append(svgGroup);
 
   return svgGroup;
+};
+
+export function changeLineStyle(value: string, strokeDash: string) {
+  const mainSvg = document.getElementById('svg');
+  if (mainSvg) {
+    mainSvg.style.opacity = value;
+    mainSvg.style.strokeDasharray = strokeDash;
+  }
+};
+
+export function clearObject(obj: any) {
+  for (const prop of Object.getOwnPropertyNames(obj)) {
+    delete obj[prop];
+  }
 }
