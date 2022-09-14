@@ -77,47 +77,53 @@ export function deleteItemFromState(id: string) {
   delete state[id];
 }
 
-function loadState(rawState: string) {
+function loadState(rawState: string): boolean {
   if (rawState) {
-    const savedState: State = JSON.parse(rawState);
+    try {
+      const savedState: State = JSON.parse(rawState);
 
-    const itemsToConnect: StateItem[] = [];
+      const itemsToConnect: StateItem[] = [];
 
-    Object.keys(savedState).forEach(id => {
-      const item = savedState[id];
+      Object.keys(savedState).forEach(id => {
+        const item = savedState[id];
 
-      createDraggableHTMLElement(
-        item.title,
-        item.text,
-        item.color,
-        { x: item.position.x, y: item.position.y },
-        id
-      );
+        createDraggableHTMLElement(
+          item.title,
+          item.text,
+          item.color,
+          { x: item.position.x, y: item.position.y },
+          id
+        );
 
-      if (item.connections.length > 0) {
-        itemsToConnect.push(item); // We need to create elements first and connect them after
-      }
-    });
-
-    itemsToConnect.forEach(item => {
-      if (item.connections.length > 0) {
-        const itemHTMLElement = document.getElementById(item.id);
-        if (itemHTMLElement) {
-          item.connections.forEach(connection => {
-            const toHTMLElement = document.getElementById(connection.to.toString());
-            if (toHTMLElement) {
-              const line = drawLine(itemHTMLElement, toHTMLElement);
-              connector.setChildren(itemHTMLElement.id, toHTMLElement);
-              connector.setParent(toHTMLElement.id, itemHTMLElement);
-              line.setAttribute('data-from', connection.from.toString());
-              line.setAttribute('data-to', connection.to.toString());
-            }
-          })
+        if (item.connections.length > 0) {
+          itemsToConnect.push(item); // We need to create elements first and connect them after
         }
-      }
-    });
+      });
 
+      itemsToConnect.forEach(item => {
+        if (item.connections.length > 0) {
+          const itemHTMLElement = document.getElementById(item.id);
+          if (itemHTMLElement) {
+            item.connections.forEach(connection => {
+              const toHTMLElement = document.getElementById(connection.to.toString());
+              if (toHTMLElement) {
+                const line = drawLine(itemHTMLElement, toHTMLElement);
+                connector.setChildren(itemHTMLElement.id, toHTMLElement);
+                connector.setParent(toHTMLElement.id, itemHTMLElement);
+                line.setAttribute('data-from', connection.from.toString());
+                line.setAttribute('data-to', connection.to.toString());
+              }
+            })
+          }
+        }
+      });
+      return true;
+    } catch (e) {
+      alert(e);
+    }
   }
+
+  return false;
 }
 
 function saveJsonObjToFile() {
@@ -147,26 +153,31 @@ function deleteExistingGraphs() {
 }
 
 function uploadFile(event: Event) {
-  if (event && event.target) {
-    const file = (event.target as HTMLInputElement).files;
-    if (file && file[0]) {
-      let reader = new FileReader();
-      reader.readAsText(file[0]);
+  try {
+    if (event && event.target) {
+      const file = (event.target as HTMLInputElement).files;
+      if (file && file[0]) {
+        let reader = new FileReader();
+        reader.readAsText(file[0]);
 
-      reader.onload = () => {
-        if (typeof reader.result === 'string') {
-          deleteExistingGraphs();
-          loadState(reader.result as string);
-          activateGraphs();
-        }
-      };
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            const success = loadState(reader.result as string);
+            if (success) {
+              deleteExistingGraphs();
+              activateGraphs();
+            }
+          }
+        };
 
-      reader.onerror = () => {
-        alert(reader.error);
-      };
+        reader.onerror = () => {
+          alert(reader.error);
+        };
+      }
     }
+  } catch (e) {
+    alert(e);
   }
-
 }
 
 window.addEventListener('load', function() {

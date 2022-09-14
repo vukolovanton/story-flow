@@ -1,3 +1,21 @@
+$width: 25px;
+$height: 25px;
+
+@mixin button-style {
+  padding: 0.3rem;
+  width: $width;
+  height: $height;
+  text-align: center;
+  background-color: white;
+  border: 1px solid grey;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -16,10 +34,30 @@ body, svg {
   top: 0px;
 }
 
-.dots-background {
-  background-color: #f1f4f9;
-  background-image: radial-gradient(#90a1c1 0.5px, #f1f4f9 0.5px);
-  background-size: 10px 10px;
+.help {
+  position: relative;
+  height: 16px;
+
+  & p {
+    margin-bottom: 5px;
+  }
+
+  & .tooltip {
+    display: none;
+    padding: 4px;
+  }
+
+  &:hover {
+    & .tooltip {
+      display: block;
+      position: absolute;
+      font-size: 10px;
+      width: 20rem;
+      background-color: black;
+      color: white;
+      right: 50%;
+    }
+  }
 }
 
 .lines-background {
@@ -67,23 +105,22 @@ header {
     gap: 0.5em;
   }
 
+  & .logo {
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+  }
+
   & button {
-    padding: 0.3rem;
-    cursor: pointer;
+    @include button-style;
   }
 }
 
 .icon-button {
-  width: 16px;
-  height: 16px;
-  background-size: 100%;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-
-  &:hover {
-    transform: scale(1.1);
-  }
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: center;
+  @include button-style;
 }
 
 .save {
@@ -91,10 +128,10 @@ header {
 }
 
 .inputfile {
-  cursor: pointer;
   position: relative;
   font-size: 0px;
-  height: 16px;
+  @include button-style;
+
 
   &::file-selector-button {
     width: 0px;
@@ -110,16 +147,14 @@ header {
     width: 16px;
     height: 16px;
     background-size: 100%;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
     border: none;
     background-color: transparent;
     cursor: pointer;
     background-image: url('/upload.png');
   }
-
-  &:hover {
-    transform: scale(1.1);
-  }
-
 }
 
 .draggable {

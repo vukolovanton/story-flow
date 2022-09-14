@@ -19,18 +19,28 @@
         <input type="color" class="new-card-color" name="color" value="#2196F3" />
         <button class="new-card-add" title="Add new card">+</button>
         <button class="save icon-button" title="Save"></button>
-        <input type="file" name="file" id="file" class="inputfile" accept=".json" />
+        <input type="file" name="file" id="file" class="inputfile" accept=".json" title="Load" />
       </div>
-      <h3>Story Flow</h3>
+      <div class="logo">
+        <div class="help">
+          <img src="/tooltip.png" width="16" height="16">
+          <div class="tooltip">
+            <p>
+              <strong>Right click</strong> on an element to activate <strong>connection mode</strong>.
+              Do right click on an another element after to connect them.
+            </p>
+            <p>
+              You can <strong>save</strong> current state to the json file and <strong>load</strong> it later.
+            </p>
+            <p>
+              When <strong>conenction mode</strong> is activated on some card, press <strong>backspace</strong> to
+              delete this item.
+            </p>
+          </div>
+        </div>
+        <h3>Story Flow</h3>
+      </div>
     </header>
-
-<!--     <div class="draggable" id="1">
-      <strong draggable="true">Pick</strong>
-      <div class="content" contenteditable="true">
-        <p>Quid quid latine dictum sit, altum viditur</p>
-      </div>
-    </div> -->
-
   </div>
   <script type="module" src="/src/main.ts"></script>
 </body>
