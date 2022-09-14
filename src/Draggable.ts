@@ -24,7 +24,7 @@ export class Draggable {
   dragElement = () => {
     if (this.element) {
       // this.element.firstElementChild!.onmousedown = this.dragMouseDown;
-      this.element.firstElementChild?.addEventListener('dragstart', (e) => {
+      this.element.firstElementChild?.addEventListener('dragstart', (e: any) => {
         this.dragMouseDown(e);
       })
       this.element.addEventListener('contextmenu', this.handleRightClick);
